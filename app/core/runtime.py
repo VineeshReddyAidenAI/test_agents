@@ -7,6 +7,7 @@ ToolContext but never inspects it for policy — it just passes it along.
 from __future__ import annotations
 
 import json
+import time
 
 from ..config import get_settings
 from ..llm import LLMError, get_client
@@ -15,6 +16,16 @@ from .context import ToolContext
 from .registry import registry
 
 MAX_STEPS = 8
+
+
+def _stats(steps: list[dict], started: float) -> dict:
+    """Small per-run summary: latency and read/write tool-call counts."""
+    return {
+        "elapsed_ms": round((time.perf_counter() - started) * 1000),
+        "tool_calls": len(steps),
+        "reads": sum(1 for s in steps if not s["writes"]),
+        "writes": sum(1 for s in steps if s["writes"]),
+    }
 
 
 def run_agent(agent: Agent, context: ToolContext, user_input: str) -> dict:
@@ -27,6 +38,7 @@ def run_agent(agent: Agent, context: ToolContext, user_input: str) -> dict:
         {"role": "user", "content": user_input},
     ]
     steps: list[dict] = []
+    started = time.perf_counter()
 
     for _ in range(MAX_STEPS):
         try:
@@ -56,7 +68,12 @@ def run_agent(agent: Agent, context: ToolContext, user_input: str) -> dict:
         messages.append(assistant_msg)
 
         if not msg.tool_calls:
-            return {"output": msg.content or "", "tool_calls": steps, "context": context.snapshot()}
+            return {
+                "output": msg.content or "",
+                "tool_calls": steps,
+                "context": context.snapshot(),
+                "stats": _stats(steps, started),
+            }
 
         for tc in msg.tool_calls:
             try:
@@ -87,4 +104,5 @@ def run_agent(agent: Agent, context: ToolContext, user_input: str) -> dict:
         "output": "(stopped: reached the maximum number of tool-calling steps)",
         "tool_calls": steps,
         "context": context.snapshot(),
+        "stats": _stats(steps, started),
     }

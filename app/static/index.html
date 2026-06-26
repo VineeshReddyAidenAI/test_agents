@@ -205,7 +205,14 @@ async function runAgent(agentId){
           <pre class="json">args:   ${esc(JSON.stringify(c.arguments))}\nresult: ${esc(JSON.stringify(c.result))}</pre>
         </details>
       </div>`).join("");
+    const st = d.stats || {};
     el.innerHTML = `
+      <div class="chips" style="margin-bottom:12px">
+        <span class="chip">⏱ ${st.elapsed_ms ?? "?"} ms</span>
+        <span class="chip">${st.tool_calls ?? 0} tool calls</span>
+        <span class="chip r">${st.reads ?? 0} read</span>
+        <span class="chip w">${st.writes ?? 0} write</span>
+      </div>
       <label>Agent output</label>
       <div class="output-box">${esc(d.output)}</div>
       <h3 style="margin-top:18px">Tool calls through the chokepoint (${(d.tool_calls||[]).length})</h3>
