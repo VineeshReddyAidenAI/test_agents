@@ -1,0 +1,47 @@
+{
+  "POL-100245": {
+    "policy_id": "POL-100245",
+    "product": "auto",
+    "status": "active",
+    "customer": {
+      "name": "Jordan Reyes",
+      "email": "jordan.reyes@example.com",
+      "phone": "415-555-0142",
+      "dob": "1991-04-18"
+    },
+    "premium_annual": 1480.0,
+    "deductible": 500,
+    "renewal_date": "2026-07-15",
+    "notes": "Added a teen driver last term. One comprehensive claim in 2024."
+  },
+  "POL-100892": {
+    "policy_id": "POL-100892",
+    "product": "home",
+    "status": "active",
+    "customer": {
+      "name": "Priya Anand",
+      "email": "priya.anand@example.com",
+      "phone": "206-555-0177",
+      "dob": "1983-11-02"
+    },
+    "premium_annual": 2210.0,
+    "deductible": 1000,
+    "renewal_date": "2026-07-02",
+    "notes": "Bundled with auto policy POL-100893. Eligible for multi-policy discount."
+  },
+  "POL-101533": {
+    "policy_id": "POL-101533",
+    "product": "auto",
+    "status": "lapsed",
+    "customer": {
+      "name": "Marcus Webb",
+      "email": "marcus.webb@example.com",
+      "phone": "312-555-0190",
+      "dob": "1978-06-25"
+    },
+    "premium_annual": 1985.0,
+    "deductible": 250,
+    "renewal_date": "2026-06-28",
+    "notes": "Missed last payment; currently in grace period ending 2026-06-30."
+  }
+}

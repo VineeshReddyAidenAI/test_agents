@@ -1,0 +1,38 @@
+{
+  "APP-1001": {
+    "applicant_id": "APP-1001",
+    "name": "Dana Liu",
+    "age": 45,
+    "years_licensed": 25,
+    "at_fault_accidents_3yr": 0,
+    "moving_violations_3yr": 0,
+    "annual_mileage": 8000,
+    "credit_insurance_score": 760,
+    "prior_insurance": true,
+    "product": "auto"
+  },
+  "APP-1002": {
+    "applicant_id": "APP-1002",
+    "name": "Tyler Brooks",
+    "age": 19,
+    "years_licensed": 1,
+    "at_fault_accidents_3yr": 1,
+    "moving_violations_3yr": 3,
+    "annual_mileage": 30000,
+    "credit_insurance_score": 540,
+    "prior_insurance": false,
+    "product": "auto"
+  },
+  "APP-1003": {
+    "applicant_id": "APP-1003",
+    "name": "Sofia Marin",
+    "age": 30,
+    "years_licensed": 10,
+    "at_fault_accidents_3yr": 3,
+    "moving_violations_3yr": 0,
+    "annual_mileage": 12000,
+    "credit_insurance_score": 700,
+    "prior_insurance": true,
+    "product": "auto"
+  }
+}

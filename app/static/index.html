@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Insurance Agent Suite</title>
+<style>
+  :root {
+    --bg: #0b0e14; --panel: #131825; --panel-2: #1a2030; --border: #242b3d;
+    --text: #e6e9f0; --muted: #8a93a6; --accent: #6366f1;
+    --read: #38bdf8; --write: #f59e0b; --ok: #22c55e; --bad: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; }
+  header { display: flex; align-items: center; gap: 16px; padding: 14px 22px;
+    border-bottom: 1px solid var(--border); background: var(--panel); position: sticky; top: 0; z-index: 10; }
+  header h1 { font-size: 17px; margin: 0; font-weight: 600; }
+  header .spacer { flex: 1; }
+  header a { color: var(--muted); text-decoration: none; font-size: 13px; }
+  header a:hover { color: var(--text); }
+  .pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border);
+    color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+  .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .pill.ok .dot { background: var(--ok); } .pill.bad .dot { background: var(--bad); }
+
+  .layout { display: flex; min-height: calc(100vh - 56px); }
+  nav { width: 260px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 16px 12px; background: var(--panel); }
+  nav .group-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 8px 10px; }
+  nav button { width: 100%; text-align: left; background: none; border: none; color: var(--text);
+    padding: 11px 12px; border-radius: 9px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
+  nav button:hover { background: var(--panel-2); }
+  nav button.active { background: var(--panel-2); box-shadow: inset 2px 0 0 var(--accent); }
+  nav .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  nav .nav-meta { display: flex; flex-direction: column; }
+  nav .nav-meta small { color: var(--muted); font-size: 11px; }
+
+  main { flex: 1; padding: 24px 30px; max-width: 940px; }
+  .view { display: none; } .view.active { display: block; }
+  .agent-head { margin-bottom: 16px; }
+  .agent-head h2 { margin: 0 0 4px; font-size: 22px; }
+  .agent-head p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .card h3 { margin: 0 0 12px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+  textarea, input, select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 10px 12px; font-size: 14px; font-family: inherit; margin-bottom: 12px; }
+  textarea { min-height: 80px; resize: vertical; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip { font-size: 11px; padding: 3px 9px; border-radius: 6px; background: var(--panel-2);
+    border: 1px solid var(--border); color: var(--muted); }
+  .chip.r { color: var(--read); border-color: color-mix(in srgb, var(--read) 40%, var(--border)); }
+  .chip.w { color: var(--write); border-color: color-mix(in srgb, var(--write) 40%, var(--border)); }
+  .sugg { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .sugg button { background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    border-radius: 999px; padding: 6px 13px; font-size: 12.5px; cursor: pointer; }
+  .sugg button:hover { border-color: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+
+  button.run { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  button.run:hover { filter: brightness(1.1); }
+  .result { margin-top: 18px; }
+  .result-empty { color: var(--muted); font-size: 14px; font-style: italic; }
+  .output-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-size: 14.5px; white-space: pre-wrap; }
+  .banner { padding: 11px 14px; border-radius: 9px; font-size: 13px; margin-bottom: 14px; }
+  .banner.info { background: rgba(99,102,241,.12); border: 1px solid var(--accent); color: #c7c9f7; }
+  .banner.err  { background: rgba(239,68,68,.12); border: 1px solid var(--bad); color: #f9a8a8; }
+  .spinner { display: inline-block; width: 15px; height: 15px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .call { border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; margin-bottom: 8px; background: var(--bg); }
+  .call .top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tag { font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 5px; text-transform: uppercase; letter-spacing: .04em; }
+  .tag.r { background: color-mix(in srgb, var(--read) 18%, transparent); color: var(--read); }
+  .tag.w { background: color-mix(in srgb, var(--write) 18%, transparent); color: var(--write); }
+  .call .op { font-weight: 600; font-family: ui-monospace, monospace; font-size: 13.5px; }
+  .call .who { color: var(--muted); font-size: 12px; margin-left: auto; }
+  details summary { cursor: pointer; color: var(--accent); font-size: 12px; margin-top: 6px; }
+  pre.json { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 10px; overflow-x: auto; font-size: 12px; margin: 6px 0 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛡️ Insurance Agent Suite</h1>
+  <span class="pill" id="model-pill"><span class="dot"></span><span id="model-text">connecting…</span></span>
+  <span class="pill">governance: external</span>
+  <div class="spacer"></div>
+  <a href="/docs" target="_blank">API Docs ↗</a>
+</header>
+
+<div class="layout">
+  <nav>
+    <div class="group-label">Agents</div>
+    <div id="agent-nav"></div>
+    <div class="group-label" style="margin-top:14px;">Platform</div>
+    <button data-view="capabilities"><span class="dot"></span><div class="nav-meta"><span>Capabilities</span><small>Tools per agent</small></div></button>
+    <button data-view="trace"><span class="dot" style="background:var(--write)"></span><div class="nav-meta"><span>Chokepoint Trace</span><small>All tool calls</small></div></button>
+  </nav>
+
+  <main>
+    <div id="agent-panels"></div>
+
+    <section class="view" id="view-capabilities">
+      <div class="agent-head"><h2>Capabilities</h2><p>Each agent is just a system prompt plus stably-named tools. Risk tier, data-access policy and autonomy are declared in the governance portal — not in the agent.</p></div>
+      <div class="banner info">🔌 Every tool below executes through a <strong>single chokepoint</strong> (<code>registry.dispatch</code>). External enforcement attaches there later with no change to agent code. The agents contain no allow/deny logic, no PII filtering, no rate limits.</div>
+      <div id="cap-cards"></div>
+    </section>
+
+    <section class="view" id="view-trace">
+      <div class="agent-head"><h2>Chokepoint Trace</h2><p>The single point every tool call passes through. This is where the Agent Lifecycle Hub attaches allow/deny, guardrails, and logging.</p></div>
+      <button class="run" onclick="loadTrace()" style="margin-bottom:14px;">Refresh</button>
+      <div class="card"><div id="trace-body" class="result-empty">Loading…</div></div>
+    </section>
+  </main>
+</div>
+
+<script>
+let MANIFESTS = [];
+// Sample actors/roles for the dropdowns. These are carried to the chokepoint as
+// context; the agent never acts on them — governance does, externally.
+const ACTOR_IDS = ["user-001", "rep-42", "uw-7", "adj-3", "intern-9"];
+const ACTOR_ROLES = ["support_agent", "senior_agent", "underwriter", "adjuster", "intern"];
+function options(list, sel){ return list.map(v => `<option ${v === sel ? "selected" : ""}>${v}</option>`).join(""); }
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+async function api(path, opts){
+  const res = await fetch(path, opts);
+  let data = null; try { data = await res.json(); } catch(e){}
+  if (!res.ok){ throw new Error((data && data.detail) ? data.detail : `HTTP ${res.status}`); }
+  return data;
+}
+function postJSON(path, body){ return api(path, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) }); }
+function toolChip(t){ return `<span class="chip ${t.writes?'w':'r'}">${t.writes?'✏ write':'🔍 read'} · ${esc(t.name)}</span>`; }
+function preview(v){ const s = typeof v === "string" ? v : JSON.stringify(v); return esc(s.length>140 ? s.slice(0,140)+"…" : s); }
+
+function show(view){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  const el = document.getElementById("view-"+view);
+  if (el) el.classList.add("active");
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+  if (view === "trace") loadTrace();
+}
+
+function buildPanels(){
+  const wrap = document.getElementById("agent-panels");
+  wrap.innerHTML = MANIFESTS.map(m => `
+    <section class="view" id="view-${m.agent_id}">
+      <div class="agent-head">
+        <h2>${esc(m.name)}</h2>
+        <p>${esc(m.description)}</p>
+        <div class="chips">${m.tools.map(toolChip).join("")}</div>
+      </div>
+      <div class="card">
+        <h3>Run</h3>
+        <div class="grid2">
+          <div><label>actor_id <span style="opacity:.6">(carried to chokepoint)</span></label><select id="${m.agent_id}-actor">${options(ACTOR_IDS, "user-001")}</select></div>
+          <div><label>actor_role <span style="opacity:.6">(carried, not enforced yet)</span></label><select id="${m.agent_id}-role">${options(ACTOR_ROLES, "support_agent")}</select></div>
+        </div>
+        <label>Try:</label>
+        <div class="sugg">${m.suggestions.map((s,i)=>`<button onclick="fillSugg('${m.agent_id}',${i})">${esc(s.label)}</button>`).join("")}</div>
+        <label>Instruction</label>
+        <textarea id="${m.agent_id}-input" placeholder="Tell the agent what to do…"></textarea>
+        <button class="run" onclick="runAgent('${m.agent_id}')">Run agent</button>
+        <div class="result" id="${m.agent_id}-result"><div class="result-empty">Pick a suggestion or type an instruction, then run.</div></div>
+      </div>
+    </section>`).join("");
+}
+
+function fillSugg(agentId, i){
+  const m = MANIFESTS.find(x => x.agent_id === agentId);
+  document.getElementById(agentId+"-input").value = m.suggestions[i].input;
+}
+
+function buildNav(){
+  const nav = document.getElementById("agent-nav");
+  nav.innerHTML = MANIFESTS.map(m => `<button data-view="${m.agent_id}">
+      <span class="dot"></span><div class="nav-meta"><span>${esc(m.name.replace(/ (Assistant|Agent|Advisor)$/,''))}</span>
+      <small>${m.tools.length} tools</small></div></button>`).join("");
+  document.querySelectorAll("nav button").forEach(b => b.onclick = () => show(b.dataset.view));
+}
+
+async function runAgent(agentId){
+  const el = document.getElementById(agentId+"-result");
+  el.innerHTML = '<span class="spinner"></span> <span style="color:var(--muted)">Agent is reasoning & calling tools…</span>';
+  try {
+    const d = await postJSON(`/agents/${agentId}/invoke`, {
+      input: document.getElementById(agentId+"-input").value,
+      actor_id: document.getElementById(agentId+"-actor").value,
+      actor_role: document.getElementById(agentId+"-role").value,
+    });
+    const calls = (d.tool_calls||[]).map(c => `
+      <div class="call">
+        <div class="top">
+          <span class="tag ${c.writes?'w':'r'}">${c.writes?'write':'read'}</span>
+          <span class="op">${esc(c.operation)}</span>
+          <span class="who">${esc(c.actor_id)} · ${esc(c.actor_role)}</span>
+        </div>
+        <details><summary>args & result</summary>
+          <pre class="json">args:   ${esc(JSON.stringify(c.arguments))}\nresult: ${esc(JSON.stringify(c.result))}</pre>
+        </details>
+      </div>`).join("");
+    el.innerHTML = `
+      <label>Agent output</label>
+      <div class="output-box">${esc(d.output)}</div>
+      <h3 style="margin-top:18px">Tool calls through the chokepoint (${(d.tool_calls||[]).length})</h3>
+      ${calls || '<div class="result-empty">No tools were called.</div>'}`;
+  } catch(e){
+    const hint = /OPENAI_API_KEY/.test(e.message) ? " — set it in .env and restart." : "";
+    el.innerHTML = `<div class="banner err"><strong>Error:</strong> ${esc(e.message)}${hint}</div>`;
+  }
+}
+
+function renderCapabilities(){
+  document.getElementById("cap-cards").innerHTML = MANIFESTS.map(m => `
+    <div class="card">
+      <strong style="font-size:16px">${esc(m.name)}</strong>
+      <p style="color:var(--muted);margin:4px 0 12px">${esc(m.description)}</p>
+      ${m.tools.map(t => `<div class="call"><div class="top">
+          <span class="tag ${t.writes?'w':'r'}">${t.writes?'write':'read'}</span>
+          <span class="op">${esc(t.name)}</span></div>
+          <div style="color:var(--muted);font-size:13px;margin-top:5px">${esc(t.description)}</div></div>`).join("")}
+    </div>`).join("");
+}
+
+async function loadTrace(){
+  const el = document.getElementById("trace-body");
+  el.innerHTML = '<span class="spinner"></span>';
+  try {
+    const d = await api("/trace?limit=50");
+    const rows = (d.calls||[]).slice().reverse();
+    if (!rows.length){ el.innerHTML = '<div class="result-empty">No tool calls yet — run an agent.</div>'; return; }
+    el.innerHTML = `<table><thead><tr><th>Time</th><th>Agent</th><th>Operation</th><th>Type</th><th>Actor / role</th><th>Detail</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr>
+        <td>${esc((r.timestamp||"").slice(11,19))}</td>
+        <td>${esc(r.agent_id)}</td>
+        <td><span class="op">${esc(r.operation)}</span></td>
+        <td><span class="tag ${r.writes?'w':'r'}">${r.writes?'write':'read'}</span></td>
+        <td>${esc(r.actor_id)} · ${esc(r.actor_role)}</td>
+        <td><details><summary>view</summary><pre class="json">args:   ${esc(JSON.stringify(r.arguments))}\nresult: ${esc(JSON.stringify(r.result))}</pre></details></td>
+      </tr>`).join("")}</tbody></table>`;
+  } catch(e){ el.innerHTML = `<div class="banner err">${esc(e.message)}</div>`; }
+}
+
+async function init(){
+  try {
+    const info = await api("/info");
+    const pill = document.getElementById("model-pill"), txt = document.getElementById("model-text");
+    if (info.openai_key_configured){ pill.classList.add("ok"); txt.textContent = `${info.openai_model} · key ✓`; }
+    else { pill.classList.add("bad"); txt.textContent = `${info.openai_model} · no key`; }
+  } catch(e){}
+
+  try { MANIFESTS = (await api("/agents")).agents; } catch(e){ MANIFESTS = []; }
+  buildNav();
+  buildPanels();
+  renderCapabilities();
+  if (MANIFESTS.length) show(MANIFESTS[0].agent_id);
+}
+init();
+</script>
+</body>
+</html>

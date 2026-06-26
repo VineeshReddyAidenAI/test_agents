@@ -1,0 +1,54 @@
+{
+  "CLM-55012": {
+    "claim_id": "CLM-55012",
+    "policy_id": "POL-100245",
+    "product": "auto",
+    "date_of_loss": "2026-06-01",
+    "reported_date": "2026-06-03",
+    "description": "Windshield cracked by road debris on the highway. Glass-only damage.",
+    "claimed_amount": 620.0,
+    "coverage": "comprehensive",
+    "deductible": 500,
+    "policy_status": "active",
+    "fraud_signals": []
+  },
+  "CLM-55088": {
+    "claim_id": "CLM-55088",
+    "policy_id": "POL-100892",
+    "product": "home",
+    "date_of_loss": "2026-05-20",
+    "reported_date": "2026-05-22",
+    "description": "Burst pipe under kitchen sink caused sudden water damage to flooring and cabinetry.",
+    "claimed_amount": 7400.0,
+    "coverage": "dwelling",
+    "deductible": 1000,
+    "policy_status": "active",
+    "fraud_signals": []
+  },
+  "CLM-55130": {
+    "claim_id": "CLM-55130",
+    "policy_id": "POL-101533",
+    "product": "auto",
+    "date_of_loss": "2026-05-15",
+    "reported_date": "2026-06-20",
+    "description": "Collision with guardrail; front-end damage. Reported 36 days after loss.",
+    "claimed_amount": 4200.0,
+    "coverage": "collision",
+    "deductible": 250,
+    "policy_status": "lapsed",
+    "fraud_signals": ["policy_lapsed_at_loss", "late_report"]
+  },
+  "CLM-55177": {
+    "claim_id": "CLM-55177",
+    "policy_id": "POL-100245",
+    "product": "auto",
+    "date_of_loss": "2026-06-10",
+    "reported_date": "2026-06-11",
+    "description": "Total loss claim; vehicle reported stolen then recovered burned. Multiple inconsistencies in statement.",
+    "claimed_amount": 28500.0,
+    "coverage": "comprehensive",
+    "deductible": 500,
+    "policy_status": "active",
+    "fraud_signals": ["inconsistent_statement", "high_value", "recent_coverage_increase"]
+  }
+}
