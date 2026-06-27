@@ -18,7 +18,7 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 app = FastAPI(
     title="Insurance Agent Suite (OpenAI)",
-    version="2.1.1",
+    version="2.1.2",
     description=(
         "Four governance-READY OpenAI agents (Policy Q&A, Customer Service Email, "
         "Underwriting Advisor, Claims Adjudication). Each is pure capability: a "
