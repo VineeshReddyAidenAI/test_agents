@@ -18,7 +18,7 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 app = FastAPI(
     title="Insurance Agent Suite (OpenAI)",
-    version="2.1.2",
+    version="2.2.0",
     description=(
         "Four governance-READY OpenAI agents (Policy Q&A, Customer Service Email, "
         "Underwriting Advisor, Claims Adjudication). Each is pure capability: a "
@@ -44,7 +44,7 @@ def info():
         "service": "Insurance Agent Suite",
         "openai_model": settings.openai_model,
         "openai_key_configured": bool(settings.openai_api_key),
-        "agents": ["policy-qa", "cs-email", "underwriting", "claims"],
+        "agents": ["policy-qa", "cs-email", "underwriting", "claims", "fraud-detection"],
         "governance": "external (Agent Lifecycle Hub) — enforced at registry.dispatch chokepoint",
         "ui": "/ui/",
         "docs": "/docs",

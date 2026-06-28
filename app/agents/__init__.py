@@ -90,7 +90,39 @@ claims_adjudication = Agent(
     ),
 )
 
+fraud_detection = Agent(
+    agent_id="fraud-detection",
+    name="Fraud Detection Agent",
+    description="Investigates a claim for fraud, checks external watchlists, and flags suspicious claims for SIU review.",
+    system_prompt=(
+        "You are a fraud detection analyst for an insurer. Fetch the claim and "
+        "its policy, look up the claimant against the external fraud watchlist, "
+        "then weigh the fraud indicators (statement inconsistencies, lapsed "
+        "coverage at the time of loss, late reporting, unusually high value, "
+        "watchlist matches). If the claim warrants it, flag it for SIU "
+        "investigation with a risk level and a clear reason. Explain your "
+        "assessment either way."
+    ),
+    tool_names=(
+        "fetch_claim",
+        "fetch_policy",
+        "check_fraud_watchlist",
+        "flag_claim_for_investigation",
+    ),
+    suggestions=(
+        Suggestion("Suspicious high-value", "Investigate claim CLM-55177 for fraud."),
+        Suggestion("Lapsed + watchlist", "Investigate claim CLM-55130 for fraud."),
+        Suggestion("Clean claim", "Investigate claim CLM-55012 for fraud."),
+    ),
+)
+
 AGENTS: dict[str, Agent] = {
     a.agent_id: a
-    for a in (policy_qa, email_assistant, underwriting_advisor, claims_adjudication)
+    for a in (
+        policy_qa,
+        email_assistant,
+        underwriting_advisor,
+        claims_adjudication,
+        fraud_detection,
+    )
 }

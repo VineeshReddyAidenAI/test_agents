@@ -1,7 +1,7 @@
 # Insurance Agent Suite — governance-ready (OpenAI + FastAPI)
 
-Four OpenAI agents (Policy Q&A, Customer Service Email, Underwriting Advisor,
-Claims Adjudication) built to be **governed by an external platform** (the
+Five OpenAI agents (Policy Q&A, Customer Service Email, Underwriting Advisor,
+Claims Adjudication, Fraud Detection) built to be **governed by an external platform** (the
 "Agent Lifecycle Hub"). The agents themselves contain **no** guardrails — no
 permission checks, no PII filtering, no allow/deny, no rate limits. They are
 pure capability: reason, call tools, return results.
@@ -39,6 +39,7 @@ gates. Those are governance concerns enforced externally.
 | CS Email (`cs-email`) | Looks up a policy, drafts / sends a reply | `fetch_customer_record`, **`save_email_draft`**, **`send_email`** |
 | Underwriting (`underwriting`) | Assesses applicant risk, records a recommendation | `get_actuarial_guidelines`, `lookup_applicant`, **`record_recommendation`** |
 | Claims (`claims`) | Determines coverage, records a decision | `fetch_claim`, `fetch_policy`, **`record_claim_decision`** |
+| Fraud Detection (`fraud-detection`) | Checks watchlists, flags suspicious claims | `fetch_claim`, `fetch_policy`, `check_fraud_watchlist` *(external API call)*, **`flag_claim_for_investigation`** |
 
 ## Setup
 
@@ -111,7 +112,8 @@ app/
     customer_tools.py    fetch_customer_record, save_email_draft, send_email
     underwriting_tools.py get_actuarial_guidelines, lookup_applicant, record_recommendation
     claims_tools.py      fetch_claim, fetch_policy, record_claim_decision
-  agents/__init__.py     the 4 agent manifests
+    fraud_tools.py       check_fraud_watchlist, flag_claim_for_investigation
+  agents/__init__.py     the 5 agent manifests
   api/                   routes.py, schemas.py
   data/                  knowledge_base.md, policies.json, claims.json, applicants.json
   static/index.html      single-page UI
