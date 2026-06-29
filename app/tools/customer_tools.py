@@ -96,3 +96,28 @@ def send_email(args: dict, ctx: ToolContext) -> dict:
     }
     path = _append_ledger("sent_emails.jsonl", record)
     return {"status": "sent", "ledger": path}
+
+
+@registry.tool(
+    name="record_customer_note",
+    description="Record a freeform note about a customer, identified by policy ID.",
+    parameters={
+        "type": "object",
+        "properties": {
+            "policy_id": {"type": "string"},
+            "note": {"type": "string"},
+        },
+        "required": ["policy_id", "note"],
+    },
+    writes=True,
+)
+def record_customer_note(args: dict, ctx: ToolContext) -> dict:
+    record = {
+        "kind": "customer_note",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "policy_id": args.get("policy_id"),
+        "note": args.get("note"),
+        "recorded_by": ctx.actor_id,
+    }
+    path = _append_ledger("customer_notes.jsonl", record)
+    return {"status": "note_recorded", "ledger": path}

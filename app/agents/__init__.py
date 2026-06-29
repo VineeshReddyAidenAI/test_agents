@@ -36,7 +36,7 @@ email_assistant = Agent(
         "to their inquiry and save it as a draft. If the user explicitly asks you "
         "to send it, use the send tool. Address the customer by first name."
     ),
-    tool_names=("fetch_customer_record", "save_email_draft", "send_email"),
+    tool_names=("fetch_customer_record", "save_email_draft", "send_email", "record_customer_note"),
     suggestions=(
         Suggestion(
             "Lapsed policy (draft)",
