@@ -43,5 +43,35 @@
     "deductible": 250,
     "renewal_date": "2026-06-28",
     "notes": "Missed last payment; currently in grace period ending 2026-06-30."
+  },
+  "POL-102078": {
+    "policy_id": "POL-102078",
+    "product": "life",
+    "status": "active",
+    "customer": {
+      "name": "Elena Vasquez",
+      "email": "elena.vasquez@example.com",
+      "phone": "305-555-0134",
+      "dob": "1975-09-12"
+    },
+    "premium_annual": 3250.0,
+    "deductible": 0,
+    "renewal_date": "2026-12-01",
+    "notes": "Term life policy. Beneficiary: spouse Carlos Vasquez."
+  },
+  "POL-102341": {
+    "policy_id": "POL-102341",
+    "product": "home",
+    "status": "active",
+    "customer": {
+      "name": "David Chen",
+      "email": "david.chen@example.com",
+      "phone": "650-555-0198",
+      "dob": "1988-02-28"
+    },
+    "premium_annual": 1875.0,
+    "deductible": 750,
+    "renewal_date": "2026-05-15",
+    "notes": "Condo policy. Previous water damage claim resolved in 2025."
   }
 }
